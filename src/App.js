@@ -1,7 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState,useRef } from 'react';
 
-function App() {
+function App(props) {
+
+  const [emotion, setEmotion] = useState("Hmm");
+
+
+  const txtMood=useRef();
+
+  const handleClick = () => {
+
+
+    const element = document.getElementById('mood');
+    console.log(element);
+    console.log(txtMood.current.value);
+    setEmotion(element.value);
+    setEmotion(txtMood.current.value);
+
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -9,14 +27,19 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+
+        <p>
+          How's your mood?
+        </p>
+
+        <p>
+          I am {emotion}
+        </p>
+
+        <p>
+          <input type="text" id="mood" ref={txtMood} placeholder="my mood now.."></input>
+          <button onClick={handleClick}>Update Mood</button>
+        </p>
       </header>
     </div>
   );
