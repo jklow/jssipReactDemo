@@ -4,10 +4,14 @@ var UserAgent = {
 
     ip: "192.168.18.2",
     port: "8080",
+    protocol:"sip",
+
     getUserAgent: function () {
 
+        JsSIP.debug.enable('JsSIP:*');
         var ip = UserAgent.ip;
         var port = UserAgent.port;
+        var protocol=UserAgent.protocol;
         var userAgent;
 
         var userJson = JSON.parse(localStorage.getItem("userData"))[0];
@@ -23,7 +27,7 @@ var UserAgent = {
 
         var configuration = {
             sockets: [socket],
-            uri: `sip:${user}@${ip}`,
+            uri: `${protocol}:${user}@${ip}`,
             password: password,
             'username': user,
             'display_name': user,

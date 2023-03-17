@@ -72,7 +72,8 @@ function Video() {
         //updateUI();
 
         $('#connectCall').click(function () {
-            var dest = $('#friend').val();
+            var friend = $('#friend').val();
+            var dest=`${UserAgent.protocol}:${friend}@${UserAgent.ip}`;
             userAgent.call(dest, callOptions);
             updateUI();
         });
@@ -110,10 +111,12 @@ function Video() {
             if (session) {
                 if (session.isInProgress()) {
                     if (session.direction === 'incoming') {
-                        //$('#incomingCallNumber').html(session.remote_identity.uri);
 
                         var caller = session.remote_identity.uri;
+                
+                        //console.log(caller._user);
                         $('#callInfoText').html(`In Call with ${caller}`);
+                        $('#incomingCallNumber').html(caller._user);
 
                         $('#incomingCall').show();
                         $('#callControl').hide()

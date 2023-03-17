@@ -174,7 +174,7 @@ function Chat() {
         var friend = $('#friend').val();
         //console.log(text);
         //console.log(friend);
-        userAgent.sendMessage(`sip:${friend}@${ip}`, text);
+        userAgent.sendMessage(`${UserAgent.protocol}:${friend}@${ip}`, text);
         //document.getElementById("chatlog").append(`Me:${text}\r\n`);
 
     }

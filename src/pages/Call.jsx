@@ -111,8 +111,15 @@ function Call() {
 
                         var caller=session.remote_identity.uri;
                         $('#callInfoText').html(`In Call with ${caller}`);
+                        $('#incomingCallNumber').html(caller._user);
 
                         $('#incomingCall').show();
+
+                        var caller = session.remote_identity.uri;
+                
+                        //console.log(caller._user);
+
+
                         $('#callControl').hide()
                         $('#incomingCall').show();
                     } else {
