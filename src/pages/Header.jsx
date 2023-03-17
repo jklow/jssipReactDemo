@@ -16,7 +16,7 @@ function Header() {
 
     return (
         <div style={overallStyle}>
-            <h1 style={headingStyle}>SP DVD database</h1>
+            <h1 style={headingStyle}>SIP Demo</h1>
         </div>
     )
 }

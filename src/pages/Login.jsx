@@ -1,50 +1,46 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import $ from 'jquery';
 import '../style.css';
 
-// component for the admin login
+// component for the login
 function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
 
-    // change email state after user key in the email
-    const handleEmailChange = e => {
-        setEmail(e.target.value);
-    }
-
-    // change password state after user key in the password
-    const handlePasswordChange = e => {
-        setPassword(e.target.value);
-    }
-
-    // make an axios post request after user click the log in button
+    // make an jquery post request after user click the log in button
     const handleSubmit = e => {
         e.preventDefault();
 
-        // create the payload to be sent to the back end
-        const body = {
-            email: email,
-            password: password
-        }
+        var email = $('#email').val();
+        var password = $('#pwd').val();
 
-        // make an axios post request
-        axios.post('http://localhost:3001/admin', body)
-            .then(response => {
-                localStorage.setItem('token', response.data.token);
-                window.location.assign('http://localhost:3000');
-            })
-            .catch(error => { alert('Invalid credentials') });
+        var jsonData = `{"email":"${email}","password":"${password}"}`;
+
+        console.log(jsonData);
+        $.ajax({
+            url: "http://localhost:8081/user/login",
+            type: "POST",
+            data: jsonData,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (result, textStatus, xhr) {
+                console.log(result.token)
+                localStorage.setItem("token", result.token);//JWT Token
+                localStorage.setItem("userData", result.UserData);
+                window.location.assign("chat");
+
+            },
+            error: function (xhr, status, error) {
+                console.log("error");
+                alert(error);
+            }
+
+        });
     }
 
     return (
         <div>
             <section className="ftco-section">
                 <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-md-6 text-center mb-5">
-                            <h2 className="heading-section">SIP Demo</h2>
-                        </div>
-                    </div>
+
                     <div className="row justify-content-center">
                         <div className="col-md-7 col-lg-5">
                             <div className="login-wrap p-4 p-md-5">
@@ -54,15 +50,13 @@ function Login() {
                                 <h3 className="text-center mb-4">Sign In</h3>
                                 <form onSubmit={handleSubmit} className="login-form">
                                     <div className="form-group">
-                                        <input type="text" id="Email"
-                                            value={email}
-                                            onChange={handleEmailChange} className="form-control rounded-left" placeholder="Email" required />
+                                        <input type="text" id="email"
+                                            className="form-control rounded-left" placeholder="Email" required />
                                     </div>
                                     <div className="form-group d-flex">
                                         <input type="password" className="form-control rounded-left" placeholder="Password"
-                                            id="Password"
-                                            value={password}
-                                            onChange={handlePasswordChange} required />
+                                            id="pwd"
+                                            required />
                                     </div>
                                     <div className="form-group">
                                         <button type="submit"
@@ -71,13 +65,22 @@ function Login() {
                                     <div className="form-group d-md-flex">
                                         <div className="w-50">
                                             <label className="checkbox-wrap checkbox-primary">Remember Me
-                                        <input type="checkbox" checked />
+                                                <input type="checkbox" />
                                                 <span className="checkmark"></span>
                                             </label>
                                         </div>
                                         <div className="w-50 text-md-right">
                                             <a href="#">Forgot Password</a>
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-center">
+                                            No account?{' '}
+                                            <a href="register" className="text-primary fw-bold">
+                                                Register
+                                            </a>
+                                        </p>
                                     </div>
                                 </form>
                             </div>

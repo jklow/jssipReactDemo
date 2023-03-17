@@ -9,30 +9,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Error from './pages/Error';
 import Chat from './pages/Chat';
+import Call from './pages/Call';
+import Video from './pages/Video';
+import Register from './pages/Register';
 
 import axios from 'axios';
 
 
 function App() {
 
-  const [userRole, setUserRole] = useState(null);
-
-  const options = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
-  }
-/*
-  useEffect(() => {
-    axios.get('http://localhost:3001/verify_to_access', options)
-      .then(res => {
-        setUserRole(res.data.role);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
-*/
   return (
     <div className="App">
       <link
@@ -47,14 +32,12 @@ function App() {
         <Routes>
           <Route path="/">
             <Route index element={<Login />} />
+            <Route path='/login' element={<Login />} />            
             <Route path='/chat' element={<Chat />} />
+            <Route path='/call' element={<Call />} />
+            <Route path='/video' element={<Video />} />
+            <Route path='/register' element={<Register />} />
 
-            {userRole === 'admin' ? (
-              <>
-                <Route path='/manage_actor' element={<Login />} />
-                <Route path='/add_customer' element={<Login />} />
-              </>
-            ) : null}
             <Route path="*" element={<Error />} />
           </Route>
         </Routes>
@@ -65,7 +48,5 @@ function App() {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <App />
-  </React.StrictMode>
 );

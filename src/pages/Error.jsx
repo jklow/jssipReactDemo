@@ -1,5 +1,4 @@
 import HeaderDiv from './Header';
-import NavBar from './NavBar';
 
 function Error() {
     return (
@@ -13,7 +12,6 @@ function ErrorPage() {
     return (
         <div>
             <HeaderDiv />
-            <NavBar />
             <Error />
         </div>
     )

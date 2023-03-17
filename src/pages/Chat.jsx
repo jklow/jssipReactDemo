@@ -1,7 +1,9 @@
-import JsSIP from "jssip";
+
 import { useState, useRef, useEffect } from 'react';
 import '../css/chat.css';
 import $ from 'jquery';
+
+import UserAgent from '../lib/UserAgent';
 
 function Dropdown() {
 
@@ -10,6 +12,7 @@ function Dropdown() {
     // get all the list of users once the component is loaded
     useEffect(() => {
 
+        console.log("Started");
         $.ajax({
             url: "http://localhost:8081/user",
             type: "GET",
@@ -48,51 +51,30 @@ function Dropdown() {
 }
 function Chat() {
 
+    var incomingCallAudio = new window.Audio('/sounds/msn-sound.mp3');
 
-    const txtMsg = useRef();
-
-    var incomingCallAudio = new window.Audio('../sounds/msn-sound.mp3');
-
-    var userAgent;
-    var user = "test";
-    var password = "test";
-    var ip = "192.168.18.2";
-    var port = "8080";
-    var friend = "test2";
+    var friend;
     var Message;
     var getMessageText, message_side, updateMessage;
+    var userJson = JSON.parse(localStorage.getItem("userData"))[0];
+    var user = userJson.username//"test";
+    var ip = UserAgent.ip;
 
-    //    function initUI() {
-
-    var socket = new JsSIP.WebSocketInterface(`ws://${ip}:${port}`);
-
-    var configuration = {
-        sockets: [socket],
-        uri: `sip:${user}@${ip}`,
-        password: password,
-        'username': user,
-        'display_name': user,
-        //extra_headers:["Sec-WebSocket-Protocol: sip"]
-    };
-
-    userAgent = new JsSIP.UA(configuration);
-    try {
-        userAgent = new JsSIP.UA(configuration);
-    } catch (e) {
-        console.log(e);
-    }
-
+    var userAgent = UserAgent.getUserAgent();
 
     $(function () {
 
         Message = function (arg) {
             this.text = arg.text;
             this.message_side = arg.message_side;
+            this.sender = arg.sender;
             this.draw = function (_this) {
                 return function () {
                     var $message;
                     $message = $($('.message_template').clone().html());
+                    //console.log($message);
                     $message.addClass(_this.message_side).find('.text').html(_this.text);
+                    $message.find('#avatar').html(_this.sender);
                     $('.messages').append($message);
                     return setTimeout(function () {
                         return $message.addClass('appeared');
@@ -108,7 +90,7 @@ function Chat() {
             $message_input = $('.message_input');
             return $message_input.val();
         };
-        updateMessage = function (text, message_side = 'right') {
+        updateMessage = function (text, message_side = 'right', sender = 'Me') {
             var $messages, message;
             if (text.trim() === '') {
                 return;
@@ -118,7 +100,8 @@ function Chat() {
             //message_side = message_side === 'left' ? 'right' : 'left';
             message = new Message({
                 text: text,
-                message_side: message_side
+                message_side: message_side,
+                sender: sender
             });
             message.draw();
             return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
@@ -129,78 +112,21 @@ function Chat() {
         });
         $('.message_input').keyup(function (e) {
             if (e.which === 13) {
+                phone_chat();
                 return updateMessage(getMessageText());
             }
         });
-        /*
-        sendMessage('Hello Philip! :)');
-        setTimeout(function () {
-            return sendMessage('Hi Sandy! How are you?');
-        }, 1000);
-        return setTimeout(function () {
-            return sendMessage('I\'m fine, thank you!');
-        }, 2000);
-        */
+
     });
 
-
-    //define SIP stuff
-    // Transport connection/disconnection callbacks
-    userAgent.on('connected', function () {
-        console.info('Connected');
-        //document.getElementById("start").style.display = "none";
-        document.getElementById("chat").style.display = "block";
-
-    }
-    );
-
-    userAgent.on('disconnected', function () {
-        console.info('disconnect');
-
-    }
-    );
-
-    userAgent.on('connecting', function () {
-        console.info('connecting');
-    }
-    );
-
-
-    // Call/Message reception callbacks
-    userAgent.on('call', function (display_name, uri, call) {
-        console.log("call");
-    }
-    );
-
-    userAgent.on('message', function (display_name, uri, text) {
-        console.log("message");
-        console.log(text);
-    }
-    );
-
-    // Registration/Deregistration callbacks
-    userAgent.on('register', function () {
-        console.info('Registered');
-        console.log("Registered!");
-    }
-    );
-
-    userAgent.on('deregister', function () {
-        console.info('Deregistered');
-        console.log("!");
-    }
-    );
-
-    userAgent.on('registrationFailure', function () {
-        console.info('Registration failure');
-        console.log("!");
-    }
-    );
 
 
     try {
         // Start
-        userAgent.start();
+        if (!userAgent.isConnected()) {
+
+            userAgent.start();
+        }
     } catch (e) {
         console.log(e);
         return;
@@ -208,8 +134,6 @@ function Chat() {
 
 
     //should only send etc when connected.
-
-
     // Register callbacks to desired message events
     var eventHandlers = {
         'succeeded': function (e) { console.log("sent"); console.log(e); },
@@ -227,16 +151,17 @@ function Chat() {
         //console.log(e.request);
         //console.log(e.request.from._display_name);
 
-
         var text = e.request.body;
+        var sender = e.request.from._display_name;
 
+        //$('#avatar').html(sender);
+        console.log(sender);
         if (e.originator != 'local') {
             incomingCallAudio.play();
 
-            var sender = e.request.from._display_name;
             var chatMsg = e.request.body;
             //document.getElementById("chatlog").append(`${sender}:${text}\r\n`);
-            updateMessage(chatMsg, 'left');
+            updateMessage(chatMsg, 'left', sender);
         }
     });
 
@@ -244,13 +169,11 @@ function Chat() {
     //   }
 
 
-
-
     function phone_chat() {
         var text = document.getElementById("msg").value.trim();
-        var friend=$('#friend').val();
-        console.log(text);
-        console.log(friend);
+        var friend = $('#friend').val();
+        //console.log(text);
+        //console.log(friend);
         userAgent.sendMessage(`sip:${friend}@${ip}`, text);
         //document.getElementById("chatlog").append(`Me:${text}\r\n`);
 
@@ -263,15 +186,17 @@ function Chat() {
 
             <div className="chat_window">
                 <div className="top_menu">
+                    <div className="buttons"><Dropdown /></div>
 
                     <div className="title">Chat</div>
+
                 </div>
                 <ul className="messages"></ul>
 
-               
+
                 <div className="bottom_wrapper clearfix">
-                   <div> <Dropdown /></div>
                     <div className="message_input_wrapper">
+
                         <input type="text" id="msg" className="message_input" placeholder="Type your message here..." />
                     </div>
 
@@ -279,11 +204,13 @@ function Chat() {
                         <div className="icon"></div>
                         <div className="text">Send</div>
                     </div>
+
                 </div>
+
             </div>
             <div className="message_template">
                 <li className="message">
-                    <div className="avatar"></div>
+                    <div id="avatar" className="avatar">Me</div>
                     <div className="text_wrapper">
                         <div className="text"></div>
                     </div>
