@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+//import { useState, useRef, useEffect } from 'react';
 import '../css/call.css';
 import $ from 'jquery';
 import Dropdown from "./Dropdown";
@@ -42,18 +42,20 @@ function Video() {
             session.on('accepted', updateUI);
             session.on('confirmed', function () {
                 console.log('Call confirmed');
+                /*
                 var localStream = session.connection.getLocalStreams()[0];
                 var dtmfSender = session.connection.createDTMFSender(localStream.getAudioTracks()[0])
                 session.sendDTMF = function (tone) {
                     dtmfSender.insertDTMF(tone);
                 };
                 updateUI();
+                */
             });
 
             session.on('peerconnection', (e) => {
                 console.log('peerconnection', e);
                 let logError = '';
-                const peerconnection = e.peerconnection;
+                //const peerconnection = e.peerconnection;
                 add_stream();
 
             });
@@ -69,7 +71,6 @@ function Video() {
         });
 
         userAgent.start();
-        //updateUI();
 
         $('#connectCall').click(function () {
             var friend = $('#friend').val();
@@ -103,8 +104,7 @@ function Video() {
 
         function updateUI() {
 
-            console.log("UI Update");
-            //if (configuration.uri && configuration.password) {
+            console.info("UI Update");
 
             $('#wrapper').show();
 

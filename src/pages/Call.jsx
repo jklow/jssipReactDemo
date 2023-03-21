@@ -8,7 +8,7 @@ function Call() {
 
     var session;
     var userJson = JSON.parse(localStorage.getItem("userData"))[0];
-    var user = userJson.username//"test";
+    var user = userJson.username;
     var ip = UserAgent.ip;
 
     var incomingCallAudio = new window.Audio('/sounds/ring.mp3');
@@ -22,6 +22,7 @@ function Call() {
         mediaConstraints: { audio: true, video: false }
     };
 
+    
     $(function () {
         var userAgent = UserAgent.getUserAgent();
 
@@ -48,8 +49,9 @@ function Call() {
                 session.sendDTMF = function (tone) {
                     dtmfSender.insertDTMF(tone);
                 };
-                */
+                
                 updateUI();
+                */
             });
 
 
@@ -100,7 +102,6 @@ function Call() {
         function updateUI() {
 
             console.log("UI Update");
-            //if (configuration.uri && configuration.password) {
 
             $('#wrapper').show();
 
@@ -112,10 +113,9 @@ function Call() {
                         var caller=session.remote_identity.uri;
                         $('#callInfoText').html(`In Call with ${caller}`);
                         $('#incomingCallNumber').html(caller._user);
-
+                        
                         $('#incomingCall').show();
 
-                        var caller = session.remote_identity.uri;
                 
                         //console.log(caller._user);
 
@@ -170,6 +170,7 @@ function Call() {
                 <div className="callInfo">
                     <h3>Incoming Call</h3>
                     <p id="incomingCallNumber">Unknown</p>
+                    
                 </div>
                 <div id="answer"> <i className="fa fa-phone"></i></div>
                 <div id="reject"> <i className="fa fa-phone"></i></div>

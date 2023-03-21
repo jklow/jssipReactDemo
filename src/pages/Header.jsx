@@ -1,10 +1,7 @@
 function Header() {
 
     const headingStyle = {
-        textShadow: 'black -4px -3px 6px',
-        color: 'darkslategrey',
-        fontFamily: 'MV Boli',
-        borderBottom: '2px black solid'
+        color: 'black'
     }
 
     const overallStyle = {

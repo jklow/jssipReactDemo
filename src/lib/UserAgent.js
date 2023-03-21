@@ -5,10 +5,12 @@ var UserAgent = {
     ip: "192.168.18.2",
     port: "8080",
     protocol:"sip",
+    websocket:"ws",
 
     getUserAgent: function () {
 
-        JsSIP.debug.enable('JsSIP:*');
+        //JsSIP.debug.disable();
+        //JsSIP.debug.enable('JsSIP:*');//uncomment for debugging purpose
         var ip = UserAgent.ip;
         var port = UserAgent.port;
         var protocol=UserAgent.protocol;
@@ -21,9 +23,7 @@ var UserAgent = {
         var password = JWT.split(".")[2];//get signature
 
 
-        //    function initUI() {
-
-        var socket = new JsSIP.WebSocketInterface(`ws://${ip}:${port}`);
+        var socket = new JsSIP.WebSocketInterface(`${UserAgent.websocket}://${ip}:${port}`);
 
         var configuration = {
             sockets: [socket],
@@ -43,11 +43,11 @@ var UserAgent = {
         }
 
 
-        //define SIP stuff
+        //define SIP callbacks
         // Transport connection/disconnection callbacks
         userAgent.on('connected', function () {
             console.info('Connected');
-            console.log(`Logged in as ${user}`);
+            console.info(`Logged in as ${user}`);
 
         }
         );
