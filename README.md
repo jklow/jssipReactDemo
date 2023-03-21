@@ -2,11 +2,15 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+UserAgent.js contains parameters to be modified for connection to sip server.<br/>
+
 /login or / - Login <br/>
 /register - Register <br/>
 /chat - Messaging App <br/>
 /call - Audio Call <br/>
-/video - Video call
+/video - Video call <br/>
+<br/>
+firstExpressServer.zip contains webservice code for login and registration, called by demo app. Modify databaseConfig to set connection properties
 ## Available Scripts
 
 In the project directory, you can run:
