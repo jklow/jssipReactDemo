@@ -10,7 +10,7 @@ UserAgent.js contains parameters to be modified for connection to sip server.<br
 /call - Audio Call <br/>
 /video - Video call <br/>
 <br/>
-firstExpressServer.zip contains webservice code for login and registration, called by demo app. Modify databaseConfig to set connection properties
+firstExpressServer.zip contains webservice code for login and registration, called by demo app. Modify databaseConfig.js to set db connection properties and config.js to set ip for sip server
 ## Available Scripts
 
 In the project directory, you can run:
