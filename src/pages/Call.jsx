@@ -4,6 +4,10 @@ import $ from 'jquery';
 import Dropdown from "./Dropdown";
 import UserAgent from '../lib/UserAgent';
 
+
+/*
+Main Page for audio RTC call
+*/
 function Call() {
 
     var session;
@@ -11,6 +15,7 @@ function Call() {
     var user = userJson.username;
     var ip = UserAgent.ip;
 
+    //Set up audio objects to play ringing sound and incoming audio from RTC session
     var incomingCallAudio = new window.Audio('/sounds/ring.mp3');
     incomingCallAudio.loop = true;
     incomingCallAudio.crossOrigin = "anonymous";
@@ -23,9 +28,10 @@ function Call() {
     };
 
     
-    $(function () {
+    $(function () { //ajax document.ready
         var userAgent = UserAgent.getUserAgent();
 
+        //new RTC session initialized
         userAgent.on('newRTCSession', function (ev) {
             var newSession = ev.session;
 
@@ -43,22 +49,13 @@ function Call() {
             session.on('accepted', updateUI);
             session.on('confirmed', function () {
                 console.log('Call confirmed');
-                /*
-                var localStream = session.connection.getLocalStreams()[0];
-                var dtmfSender = session.connection.createDTMFSender(localStream.getAudioTracks()[0])
-                session.sendDTMF = function (tone) {
-                    dtmfSender.insertDTMF(tone);
-                };
-                
-                updateUI();
-                */
+
             });
 
 
             if (session.direction === 'incoming') {
                 incomingCallAudio.play();
             } else {
-                console.log('con', session.connection)
                 session.connection.addEventListener('addstream', function (e) {
                     incomingCallAudio.pause();
                     remoteAudio.srcObject = e.stream;
@@ -67,7 +64,7 @@ function Call() {
             updateUI();
         });
 
-        userAgent.start();
+        userAgent.start();//start web socket communication to sip server
         //updateUI();
 
         $('#connectCall').click(function () {
@@ -116,10 +113,6 @@ function Call() {
                         
                         $('#incomingCall').show();
 
-                
-                        //console.log(caller._user);
-
-
                         $('#callControl').hide()
                         $('#incomingCall').show();
                     } else {
@@ -147,11 +140,8 @@ function Call() {
             if (session && session.isMuted().audio) {
                 //console.log("Mute");
                 //mute call
-
                 $('#muteIcon').addClass('fa-microphone-slash');
                 $('#muteIcon').removeClass('fa-microphone');
-
-
 
             } else {
                 //console.log("Unmute");
@@ -159,7 +149,6 @@ function Call() {
                 $('#muteIcon').removeClass('fa-microphone-slash');
                 $('#muteIcon').addClass('fa-microphone');
             }
-
 
         }
     });

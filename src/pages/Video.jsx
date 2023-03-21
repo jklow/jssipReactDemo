@@ -4,6 +4,10 @@ import $ from 'jquery';
 import Dropdown from "./Dropdown";
 import UserAgent from '../lib/UserAgent';
 
+/*
+Video call demo
+*/
+
 function Video() {
 
     var session;
@@ -19,12 +23,13 @@ function Video() {
     remoteAudio.crossOrigin = "anonymous";
 
     var callOptions = {
-        mediaConstraints: { audio: true, video: true }
+        mediaConstraints: { audio: true, video: true } //send/receive audio and video
     };
 
-    $(function () {
+    $(function () { //document.ready
         var userAgent = UserAgent.getUserAgent();
 
+        //new RTC detected
         userAgent.on('newRTCSession', function (ev) {
             var newSession = ev.session;
 
@@ -42,14 +47,7 @@ function Video() {
             session.on('accepted', updateUI);
             session.on('confirmed', function () {
                 console.log('Call confirmed');
-                /*
-                var localStream = session.connection.getLocalStreams()[0];
-                var dtmfSender = session.connection.createDTMFSender(localStream.getAudioTracks()[0])
-                session.sendDTMF = function (tone) {
-                    dtmfSender.insertDTMF(tone);
-                };
-                updateUI();
-                */
+
             });
 
             session.on('peerconnection', (e) => {
@@ -70,8 +68,9 @@ function Video() {
             updateUI();
         });
 
-        userAgent.start();
+        userAgent.start();//start websocket communication to server
 
+        //call friend
         $('#connectCall').click(function () {
             var friend = $('#friend').val();
             var dest=`${UserAgent.protocol}:${friend}@${UserAgent.ip}`;
@@ -79,11 +78,12 @@ function Video() {
             updateUI();
         });
 
-
+        //answer call
         $('#answer').click(function () {
             session.answer(callOptions);
         });
 
+        //reject call
         var hangup = function () {
             session.terminate();
         };
@@ -91,6 +91,7 @@ function Video() {
         $('#hangUp').click(hangup);
         $('#reject').click(hangup);
 
+        //mute call
         $('#mute').click(function () {
             console.log('MUTE CLICKED');
             if (session.isMuted().audio) {
@@ -102,6 +103,7 @@ function Video() {
         });
 
 
+        //update UI to hide/show div elements reflecting call state
         function updateUI() {
 
             console.info("UI Update");
@@ -142,15 +144,14 @@ function Video() {
                 $('#inCallButtons').hide();
                 incomingCallAudio.pause();
             }
-            //microphone mute icon
+
+            //microphone mute 
             if (session && session.isMuted().audio) {
                 //console.log("Mute");
                 //mute call
 
                 $('#muteIcon').addClass('fa-microphone-slash');
                 $('#muteIcon').removeClass('fa-microphone');
-
-
 
             } else {
                 //console.log("Unmute");
@@ -162,6 +163,7 @@ function Video() {
 
         }
 
+        //Linking the audio and video sources to the RTC streams
         function add_stream() {
             //var selfView = document.getElementById('selfView');
             var remoteView = document.getElementById('remoteView');

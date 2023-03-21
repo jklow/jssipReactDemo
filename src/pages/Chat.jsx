@@ -5,6 +5,10 @@ import $ from 'jquery';
 
 import UserAgent from '../lib/UserAgent';
 
+/*
+Messaging app demo
+*/
+
 function Dropdown() {
 
     const [users, setUsers] = useState([]);
@@ -62,8 +66,9 @@ function Chat() {
 
     var userAgent = UserAgent.getUserAgent();
 
-    $(function () {
+    $(function () {//document.ready
 
+        //Create UI for message in chat window
         Message = function (arg) {
             this.text = arg.text;
             this.message_side = arg.message_side;
@@ -90,6 +95,7 @@ function Chat() {
             $message_input = $('.message_input');
             return $message_input.val();
         };
+
         updateMessage = function (text, message_side = 'right', sender = 'Me') {
             var $messages, message;
             if (text.trim() === '') {
@@ -106,10 +112,14 @@ function Chat() {
             message.draw();
             return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
         };
+
+        //Send message
         $('.send_message').click(function (e) {
             phone_chat();
             return updateMessage(getMessageText());
         });
+
+        //Press enter to send message
         $('.message_input').keyup(function (e) {
             if (e.which === 13) {
                 phone_chat();
@@ -118,7 +128,6 @@ function Chat() {
         });
 
     });
-
 
 
     try {
@@ -133,7 +142,7 @@ function Chat() {
     }
 
 
-    //should only send etc when connected.
+    //should only send message when connected.
     // Register callbacks to desired message events
     var eventHandlers = {
         'succeeded': function (e) { console.log("sent"); console.log(e); },
@@ -145,6 +154,7 @@ function Chat() {
     };
 
 
+    //Trigger when a new message is sent or received
     userAgent.on('newMessage', function (e) {
 
         console.log(e);
@@ -166,9 +176,8 @@ function Chat() {
     });
 
 
-    //   }
 
-
+    //Send a message to friend
     function phone_chat() {
         var text = document.getElementById("msg").value.trim();
         var friend = $('#friend').val();

@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import $ from 'jquery';
 import '../style.css';
 
-// component for the login
+// component for login
 function Login() {
 
     // make an jquery post request after user click the log in button
     const handleSubmit = e => {
         e.preventDefault();
 
-        var email = $('#email').val();
-        var password = $('#pwd').val();
+        var email = $('#email').val(); //get email
+        var password = $('#pwd').val();//get password
 
         var jsonData = `{"email":"${email}","password":"${password}"}`;
 
-        console.log(jsonData);
+        //console.log(jsonData);
         $.ajax({
             url: "http://localhost:8081/user/login",
             type: "POST",
@@ -23,8 +23,11 @@ function Login() {
             dataType: "json",
             success: function (result, textStatus, xhr) {
                 console.log(result.token)
+
+                //setting local storage
                 localStorage.setItem("token", result.token);//JWT Token
                 localStorage.setItem("userData", result.UserData);
+                
                 window.location.assign("chat");
 
             },
