@@ -2,10 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-/login or / - Login
-/register - Register
-/chat - Chat App
-/call - Audio Call
+/login or / - Login <br/>
+/register - Register <br/>
+/chat - Messaging App <br/>
+/call - Audio Call <br/>
 /video - Video call
 ## Available Scripts
 
