@@ -1,7 +1,12 @@
-# Getting Started with Create React App
+# JSsip Websocket Demo with Kamailio server and mysql hosted on remote server 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+/login or / - Login
+/register - Register
+/chat - Chat App
+/call - Audio Call
+/video - Video call
 ## Available Scripts
 
 In the project directory, you can run:
