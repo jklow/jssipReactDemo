@@ -1,5 +1,8 @@
 import JsSIP from "jssip";
 
+/*
+    Helper library to connect and register current user/subscriber with sip server
+*/
 var UserAgent = {
 
     ip: "192.168.18.2",
