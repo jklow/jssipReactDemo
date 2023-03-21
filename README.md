@@ -1,4 +1,4 @@
-# JSsip Websocket Demo with Kamailio server and mysql hosted on remote server 
+# jsSIP Websocket Demo with Kamailio server and mysql hosted on remote server 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
